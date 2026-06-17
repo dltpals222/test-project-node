@@ -123,4 +123,51 @@ export class RecordsRepository {
       to_status: toStatus,
     });
   }
+
+  /** 상태 변경 이력 (감사) — 변경 주체 username 조인 */
+  getStatusHistory(recordId: number) {
+    return this.knex('record_status_history as h')
+      .leftJoin('users as u', 'u.id', 'h.user_id')
+      .where('h.record_id', recordId)
+      .orderBy('h.id', 'desc')
+      .select(
+        'h.id',
+        'h.from_status',
+        'h.to_status',
+        'h.created_at',
+        'u.username as actor',
+      );
+  }
+
+  /** 메모 목록 — 작성자 username 조인 */
+  listMemos(recordId: number) {
+    return this.knex('record_memos as m')
+      .leftJoin('users as u', 'u.id', 'm.user_id')
+      .where('m.record_id', recordId)
+      .orderBy('m.id', 'desc')
+      .select(
+        'm.id',
+        'm.content',
+        'm.is_important',
+        'm.created_at',
+        'u.username as author',
+      );
+  }
+
+  async createMemo(
+    recordId: number,
+    userId: number,
+    content: string,
+    isImportant: boolean,
+  ) {
+    const [created] = await this.knex('record_memos')
+      .insert({
+        record_id: recordId,
+        user_id: userId,
+        content,
+        is_important: isImportant,
+      })
+      .returning('*');
+    return created;
+  }
 }

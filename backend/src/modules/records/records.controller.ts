@@ -15,6 +15,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { CreateRecordDto } from './dto/create-record.dto';
+import { CreateMemoDto } from './dto/create-memo.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 import { RecordsService } from './records.service';
 
@@ -58,6 +59,28 @@ export class RecordsController {
     @Body() dto: UpdateStatusDto,
   ) {
     return this.recordsService.updateStatus(actor, id, dto);
+  }
+
+  @Get(':id/history')
+  @Roles('superadmin', 'admin', 'manager', 'member')
+  getHistory(@CurrentUser() actor: AuthUser, @Param('id', ParseIntPipe) id: number) {
+    return this.recordsService.getHistory(actor, id);
+  }
+
+  @Get(':id/memos')
+  @Roles('superadmin', 'admin', 'manager', 'member')
+  listMemos(@CurrentUser() actor: AuthUser, @Param('id', ParseIntPipe) id: number) {
+    return this.recordsService.listMemos(actor, id);
+  }
+
+  @Post(':id/memos')
+  @Roles('superadmin', 'admin', 'manager', 'member')
+  addMemo(
+    @CurrentUser() actor: AuthUser,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: CreateMemoDto,
+  ) {
+    return this.recordsService.addMemo(actor, id, dto);
   }
 
   @Delete(':id')

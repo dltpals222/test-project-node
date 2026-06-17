@@ -6,6 +6,7 @@ import {
 import { AuthUser } from '../../common/decorators/current-user.decorator';
 import { PartnersService } from '../partners/partners.service';
 import { CreateRecordDto } from './dto/create-record.dto';
+import { CreateMemoDto } from './dto/create-memo.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 import { RecordRow } from './entities/record.entity';
 import { RecordsRepository } from './records.repository';
@@ -66,6 +67,27 @@ export class RecordsService {
 
   create(dto: CreateRecordDto): Promise<RecordRow> {
     return this.recordsRepository.create(dto);
+  }
+
+  /** 상태 변경 이력 — findOne 으로 접근 권한(배정 기반 포함) 검사 후 반환 */
+  async getHistory(actor: AuthUser, id: number) {
+    await this.findOne(actor, id);
+    return this.recordsRepository.getStatusHistory(id);
+  }
+
+  async listMemos(actor: AuthUser, id: number) {
+    await this.findOne(actor, id);
+    return this.recordsRepository.listMemos(id);
+  }
+
+  async addMemo(actor: AuthUser, id: number, dto: CreateMemoDto) {
+    await this.findOne(actor, id);
+    return this.recordsRepository.createMemo(
+      id,
+      actor.id,
+      dto.content,
+      dto.is_important ?? false,
+    );
   }
 
   async updateStatus(

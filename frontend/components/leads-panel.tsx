@@ -10,6 +10,7 @@ import {
 import { RECORD_STATUSES, type RecordItem, type RecordStatus } from '@/features/records/types';
 import { STATUS_LABEL } from '@/lib/leads';
 import { StatusPill } from './status-pill';
+import { LeadDrawer } from './lead-drawer';
 
 const CAN_CREATE = ['superadmin', 'admin'];
 
@@ -28,6 +29,7 @@ export function LeadsPanel({ title, subtitle }: { title: string; subtitle: strin
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [formErr, setFormErr] = useState<string | null>(null);
+  const [selected, setSelected] = useState<RecordItem | null>(null);
 
   const canCreate = user ? CAN_CREATE.includes(user.role) : false;
   const rows: RecordItem[] = records.data ?? [];
@@ -153,13 +155,13 @@ export function LeadsPanel({ title, subtitle }: { title: string; subtitle: strin
               </thead>
               <tbody>
                 {rows.map((r) => (
-                  <tr key={r.id}>
+                  <tr key={r.id} onClick={() => setSelected(r)} style={{ cursor: 'pointer' }}>
                     <td className="cell-id">#{String(r.id).padStart(3, '0')}</td>
                     <td style={{ fontWeight: 600 }}>{r.name}</td>
                     <td className="cell-phone">{r.phone}</td>
                     <td className="cell-id">{fmtDate(r.created_at)}</td>
                     <td><StatusPill status={r.status} /></td>
-                    <td>
+                    <td onClick={(e) => e.stopPropagation()}>
                       <select
                         className="input"
                         style={{ padding: '6px 10px', fontSize: 12.5 }}
@@ -179,6 +181,8 @@ export function LeadsPanel({ title, subtitle }: { title: string; subtitle: strin
           </div>
         )}
       </div>
+
+      <LeadDrawer record={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }

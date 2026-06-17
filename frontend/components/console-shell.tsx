@@ -19,6 +19,7 @@ const ICONS = {
   shield: 'M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',
   chart: 'M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-3',
   gear: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L16 2H8l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 3 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1c.6.5 1.3.9 2 1.2L8 22h8l.5-2.6c.7-.3 1.4-.7 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2',
+  users: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
   power: 'M12 4v8M7 7a7 7 0 1 0 10 0',
 };
 
@@ -35,6 +36,7 @@ export function ConsoleShell({
 
   const nav = [
     { key: 'dashboard', label: '대시보드', icon: ICONS.grid, href: home, enabled: true },
+    ...(isAdmin ? [{ key: 'team', label: '팀 관리', icon: ICONS.users, href: '/admin/team', enabled: true }] : []),
     { key: 'assign', label: '배정 현황', icon: ICONS.flow, href: '#', enabled: false },
     { key: 'identity', label: '본인인증', icon: ICONS.shield, href: '#', enabled: false },
     { key: 'reports', label: '리포트', icon: ICONS.chart, href: '#', enabled: false },
