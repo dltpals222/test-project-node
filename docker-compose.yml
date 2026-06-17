@@ -10,6 +10,58 @@ services:
       - "5432:5432"
     volumes:
       - postgres-dev-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dummy -d dummy_dev"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+    container_name: dummy-backend
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
+    environment:
+      NODE_ENV: local
+      DB_HOST: postgres-dev
+      DB_PORT: "5432"
+      DB_USER: dummy
+      DB_PASSWORD: ${LOCAL_DB_PASSWORD:-dev_password_123}
+      DB_NAME: dummy_dev
+      DB_SSL: "false"
+      # 운영에서는 반드시 강력한 값으로 교체 (.env 또는 환경변수로 주입)
+      JWT_SECRET: ${JWT_SECRET:-docker_dev_jwt_secret_change_me_0a1b2c3d4e5f}
+      PORT: "3001"
+      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
+    ports:
+      - "3001:3001"
+    healthcheck:
+      # 401(미인증)도 응답이면 서버가 살아있는 것으로 간주
+      test:
+        ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/auth/me',r=>process.exit(0)).on('error',()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # 컨테이너 네트워크에서 Next 프록시가 백엔드에 닿을 주소 (빌드 시 manifest 에 반영)
+        API_URL: http://backend:3001
+    container_name: dummy-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      API_URL: http://backend:3001
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+    ports:
+      - "3000:3000"
 
 volumes:
   postgres-dev-data:

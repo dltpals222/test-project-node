@@ -9,10 +9,29 @@
 
 문서: [CLAUDE.md](CLAUDE.md) · [아키텍처](docs/architecture.md) · [핸드오프 명세](docs/handoff/README.md)
 
-## 실행 순서
+## 전체를 도커로 한 번에 (권장)
+
+Docker Desktop 실행 후, 저장소 루트에서 한 줄이면 postgres + backend + frontend 가 모두 뜹니다.
+백엔드 컨테이너가 기동 시 마이그레이션·시드를 자동 실행합니다.
 
 ```bash
-# 0) Docker Desktop 실행 후
+docker compose up -d --build
+# 프론트:  http://localhost:3000
+# 백엔드:  http://localhost:3001/api  (Swagger: /api-docs)
+# 초기 계정: superadmin / superadmin123!
+
+docker compose logs -f          # 로그 보기
+docker compose down             # 중지 (DB 볼륨은 유지)
+docker compose down -v          # 중지 + DB 데이터까지 삭제(초기화)
+```
+
+> 컨테이너에서는 NODE_ENV=production 으로 프론트 인증이 활성화되어, 로그인해야 진입합니다.
+> `JWT_SECRET` 는 compose 의 기본값 대신 환경변수(또는 루트 `.env`)로 주입해 교체하세요.
+
+## 로컬에서 개별 실행 (도커 없이)
+
+```bash
+# 0) DB 만 도커로
 docker compose up -d postgres-dev
 
 # 1) 백엔드
