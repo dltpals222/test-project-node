@@ -66,6 +66,6 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  // 정적 자산/이미지/파비콘/api 프록시는 제외
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|api).*)'],
+  // _next, api, 그리고 점(.)이 포함된 모든 정적 자산(icon.svg, favicon.ico, *.png 등)은 제외
+  matcher: ['/((?!_next/static|_next/image|api|.*\\.).*)'],
 };
