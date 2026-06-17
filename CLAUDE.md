@@ -32,6 +32,7 @@ test-project-node/
 | [프론트엔드 컨벤션](docs/frontend-conventions.md) | `frontend/` 에서 화면·컴포넌트·데이터 패칭 작업을 할 때 |
 | [백엔드 컨벤션](docs/backend-conventions.md) | `backend/` 에서 API·모듈·DB 작업을 할 때 |
 | [공통 규칙](docs/common-conventions.md) | 코딩 스타일·네이밍·Git·커밋·테스트 규칙이 필요할 때 |
+| [핸드오프 명세](docs/handoff/README.md) | 더미 프로젝트(스택·보안·DB)를 어떤 명세로 구축했는지 확인할 때 |
 
 ## 자주 쓰는 명령어
 
