@@ -62,9 +62,9 @@ exports.up = async (knex) => {
       .onDelete('SET NULL');
     t.timestamp('assigned_at').nullable();
     t.timestamp('completed_at').nullable();
-    t.timestamptz('deleted_at').nullable(); // ⭐ soft delete
+    t.timestamp('deleted_at', { useTz: true }).nullable(); // ⭐ soft delete
     t.bigInteger('deleted_by').nullable().references('id').inTable('users').onDelete('SET NULL'); // ⭐ 삭제 감사
-    t.timestamptz('restored_at').nullable(); // ⭐ 복원
+    t.timestamp('restored_at', { useTz: true }).nullable(); // ⭐ 복원
     t.bigInteger('restored_by').nullable().references('id').inTable('users').onDelete('SET NULL'); // ⭐ 복원 감사
     t.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
     t.timestamp('updated_at').notNullable().defaultTo(knex.fn.now());
@@ -124,7 +124,7 @@ exports.up = async (knex) => {
     t.specificType('status', 'assignment_status').notNullable().defaultTo('assigned');
     t.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
     t.timestamp('removed_at').nullable();
-    t.timestamptz('deleted_at').nullable();
+    t.timestamp('deleted_at', { useTz: true }).nullable();
     t.bigInteger('deleted_by').nullable().references('id').inTable('users').onDelete('SET NULL');
     t.unique(['record_id', 'partner_id']);
     t.index('record_id');

@@ -24,20 +24,19 @@ export class RecordsService {
     return (FULL_ACCESS_ROLES as readonly string[]).includes(actor.role);
   }
 
-  /** manager/member 의 파트너 id 를 해석. 파트너 매핑이 없으면 접근 불가. */
-  private async requirePartnerId(actor: AuthUser): Promise<number> {
+  /** manager/member 의 파트너 id 를 해석. 파트너 매핑이 없으면 null(=접근 가능 레코드 없음). */
+  private async resolvePartnerId(actor: AuthUser): Promise<number | null> {
     const partner = await this.partnersService.findByUserId(actor.id);
-    if (!partner) {
-      throw new ForbiddenException('연결된 파트너 정보가 없어 레코드에 접근할 수 없습니다');
-    }
-    return partner.id;
+    return partner ? partner.id : null;
   }
 
   async findAll(actor: AuthUser): Promise<RecordRow[]> {
     if (this.hasFullAccess(actor)) {
       return this.recordsRepository.findAllActive();
     }
-    const partnerId = await this.requirePartnerId(actor);
+    // 파트너 미연결 사용자는 배정된 레코드가 있을 수 없으므로 빈 목록(접근 권한은 있으나 데이터 없음)
+    const partnerId = await this.resolvePartnerId(actor);
+    if (partnerId === null) return [];
     return this.recordsRepository.findAssignedToPartner(partnerId);
   }
 
@@ -52,8 +51,11 @@ export class RecordsService {
     }
 
     if (!this.hasFullAccess(actor)) {
-      const partnerId = await this.requirePartnerId(actor);
-      const allowed = await this.recordsRepository.hasActiveAssignment(id, partnerId);
+      // 파트너 미연결 또는 미배정 → 존재 은닉을 위해 동일하게 NotFound 로 응답
+      const partnerId = await this.resolvePartnerId(actor);
+      const allowed =
+        partnerId !== null &&
+        (await this.recordsRepository.hasActiveAssignment(id, partnerId));
       if (!allowed) {
         throw new NotFoundException(`레코드(${id})를 찾을 수 없습니다`);
       }
