@@ -50,10 +50,17 @@ npm run dev                  # http://localhost:3000  (인증 우회)
 npm run dev:auth             # ENABLE_AUTH=true
 ```
 
-## 초기 계정
+## 계정 (데모)
 
-- 아이디: `superadmin` / 비밀번호: `superadmin123!`
-- 최초 로그인 시 `password_changed_at = NULL` 이므로 **비밀번호 강제 변경** 화면으로 이동합니다.
+| 계정 | 비밀번호 | 역할 | 비고 |
+| --- | --- | --- | --- |
+| `superadmin` | `superadmin123!` | 슈퍼관리자 | 첫 로그인 시 **비밀번호 강제 변경**(`password_changed_at = NULL`) |
+| `admin1` | `Admin1!` | 관리자 | 바로 로그인 → 전체 리드 대시보드 |
+| `manager1` | `Manager1!` | 담당자 | 배정된 리드만 표시 |
+| `member1` | `Member1!` | 협력사 | 배정된 리드만 표시 |
+
+> 데모 데이터: 리드 18건, 일부는 담당자/협력사에 배정되어 배정 기반 RBAC 가 화면에서 드러납니다.
+> 프론트엔드는 "Relay" 라는 리드/케이스 배정 콘솔 컨셉의 다크 UI 로 구성했습니다.
 
 ## 재현된 보안 메커니즘
 

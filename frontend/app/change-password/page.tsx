@@ -58,50 +58,52 @@ export default function ChangePasswordPage() {
   });
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-6 p-6">
-      <div>
-        <h1 className="text-2xl font-bold">비밀번호 변경</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          첫 로그인 또는 초기화된 계정은 비밀번호를 변경해야 합니다.
-        </p>
+    <div className="grid-texture" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24 }}>
+      <div style={{ width: '100%', maxWidth: 420 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 11, marginBottom: 22 }}>
+          <div className="brand-mark">R</div>
+          <div style={{ fontWeight: 700, fontSize: 17, letterSpacing: '-0.02em' }}>Relay</div>
+        </div>
+
+        <div className="panel rise" style={{ padding: 28 }}>
+          <div className="eyebrow" style={{ marginBottom: 10 }}>SECURITY</div>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em' }}>비밀번호 변경</h1>
+          <p style={{ margin: '8px 0 22px', color: 'var(--text-dim)', fontSize: 13.5, lineHeight: 1.55 }}>
+            첫 로그인이거나 초기화된 계정은 보안을 위해 비밀번호를 변경해야 합니다.
+          </p>
+
+          <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
+            <Field label="현재 비밀번호" type="password" reg={register('currentPassword')} err={errors.currentPassword?.message} />
+            <Field label="새 비밀번호" type="password" reg={register('newPassword')} err={errors.newPassword?.message} />
+            <Field label="새 비밀번호 확인" type="password" reg={register('confirmPassword')} err={errors.confirmPassword?.message} />
+
+            {serverError && (
+              <div className="panel" style={{ padding: '10px 13px', borderColor: 'color-mix(in srgb, var(--danger) 40%, transparent)', background: 'color-mix(in srgb, var(--danger) 10%, transparent)', color: 'var(--danger)', fontSize: 13 }}>
+                {serverError}
+              </div>
+            )}
+            {done && (
+              <div className="panel" style={{ padding: '10px 13px', borderColor: 'color-mix(in srgb, var(--st-completed) 40%, transparent)', background: 'color-mix(in srgb, var(--st-completed) 10%, transparent)', color: 'var(--st-completed)', fontSize: 13 }}>
+                변경되었습니다. 콘솔로 이동합니다…
+              </div>
+            )}
+
+            <button type="submit" className="btn btn-primary" style={{ height: 44, marginTop: 4 }} disabled={changePassword.isPending}>
+              {changePassword.isPending ? <span className="spinner" /> : '비밀번호 변경'}
+            </button>
+          </form>
+        </div>
       </div>
-
-      <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <Field label="현재 비밀번호" type="password" reg={register('currentPassword')} err={errors.currentPassword?.message} />
-        <Field label="새 비밀번호" type="password" reg={register('newPassword')} err={errors.newPassword?.message} />
-        <Field label="새 비밀번호 확인" type="password" reg={register('confirmPassword')} err={errors.confirmPassword?.message} />
-
-        {serverError && <p className="text-sm text-red-600">{serverError}</p>}
-        {done && <p className="text-sm text-green-600">변경되었습니다. 이동 중…</p>}
-
-        <button
-          type="submit"
-          disabled={changePassword.isPending}
-          className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
-        >
-          {changePassword.isPending ? '변경 중…' : '비밀번호 변경'}
-        </button>
-      </form>
-    </main>
+    </div>
   );
 }
 
-function Field({
-  label,
-  type,
-  reg,
-  err,
-}: {
-  label: string;
-  type: string;
-  reg: UseFormRegisterReturn;
-  err?: string;
-}) {
+function Field({ label, type, reg, err }: { label: string; type: string; reg: UseFormRegisterReturn; err?: string }) {
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium">{label}</label>
-      <input type={type} {...reg} className="rounded border border-gray-300 px-3 py-2" />
-      {err && <span className="text-xs text-red-600">{err}</span>}
+    <div>
+      <label className="field-label">{label}</label>
+      <input type={type} {...reg} className="input" style={{ marginTop: 7 }} />
+      {err && <span style={{ color: 'var(--danger)', fontSize: 12, marginTop: 6, display: 'block' }}>{err}</span>}
     </div>
   );
 }

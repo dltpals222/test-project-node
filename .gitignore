@@ -26,3 +26,7 @@ npm-debug.log*
 .DS_Store
 coverage/
 *.tsbuildinfo
+
+# playwright / 검증 아티팩트
+.playwright-mcp/
+relay-*.png

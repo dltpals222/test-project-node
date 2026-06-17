@@ -10,18 +10,18 @@ export default function HomePage() {
   const { user } = useSession();
 
   useEffect(() => {
-    // 토큰이 있으면 역할 홈으로, 없으면 로그인으로
     const token = typeof window !== 'undefined' ? localStorage.getItem('dummy_access_token') : null;
-    if (!token) {
-      router.replace('/login');
-    } else if (user) {
-      router.replace(roleHome(user.role));
-    }
+    if (!token) router.replace('/login');
+    else if (user) router.replace(roleHome(user.role));
   }, [router, user]);
 
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <p className="text-gray-500">이동 중…</p>
-    </main>
+    <div className="grid-texture" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+        <div className="brand-mark" style={{ width: 40, height: 40, fontSize: 21 }}>R</div>
+        <span className="spinner" />
+        <span className="eyebrow">CONNECTING TO RELAY</span>
+      </div>
+    </div>
   );
 }

@@ -1,5 +1,10 @@
-import { RecordsBoard } from '@/components/records-board';
+import { ConsoleShell } from '@/components/console-shell';
+import { LeadsPanel } from '@/components/leads-panel';
 
 export default function MemberPage() {
-  return <RecordsBoard title="외부 당사자 — 배정된 레코드" />;
+  return (
+    <ConsoleShell active="dashboard">
+      <LeadsPanel title="협력 리드" subtitle="배정받은 리드를 확인하고 상태를 업데이트합니다." />
+    </ConsoleShell>
+  );
 }
