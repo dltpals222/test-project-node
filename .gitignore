@@ -30,3 +30,6 @@ coverage/
 # playwright / 검증 아티팩트
 .playwright-mcp/
 relay-*.png
+
+# Claude 로컬 설정(개인용)
+.claude/settings.local.json
